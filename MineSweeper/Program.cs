@@ -7,44 +7,45 @@ namespace MineSweeper
     class Program
     {
         protected static Tile[,] arr;
+        private static int mineAmount;
 
         public static List<int[]> AddNeighbour(int row, int col)
         {
             int length = arr.GetLength(0) - 1;
             var listTile = new List<int[]>();
-            if (arr[row, col].GetMine() == 0)
+            if (arr[row, col].Mine == 0)
             {
                 if (row != 0)
                 {
-                    if (arr[row - 1, col].isPressed == false) listTile.Add(new int[] { row - 1, col });
+                    if (arr[row - 1, col].IsPressed == false) listTile.Add(new int[] { row - 1, col });
                     if (col != length)
                     {
-                        if (arr[row - 1, col + 1].isPressed == false) listTile.Add(new int[] { row - 1, col + 1 });
+                        if (arr[row - 1, col + 1].IsPressed == false) listTile.Add(new int[] { row - 1, col + 1 });
                     }
                 }
                 if (col != 0)
                 {
-                    if (arr[row, col - 1].isPressed == false) listTile.Add(new int[] { row, col - 1 });
+                    if (arr[row, col - 1].IsPressed == false) listTile.Add(new int[] { row, col - 1 });
                     if (row != length)
                     {
-                        if (arr[row + 1, col - 1].isPressed == false) listTile.Add(new int[] { row + 1, col - 1 });
+                        if (arr[row + 1, col - 1].IsPressed == false) listTile.Add(new int[] { row + 1, col - 1 });
                     }
                 }
                 if (row != 0 && col != 0)
                 {
-                    if (arr[row - 1, col - 1].isPressed == false) listTile.Add(new int[] { row - 1, col - 1 });
+                    if (arr[row - 1, col - 1].IsPressed == false) listTile.Add(new int[] { row - 1, col - 1 });
                 }
                 if (row != length && col != length)
                 {
-                    if (arr[row + 1, col + 1].isPressed == false) listTile.Add(new int[] { row + 1, col + 1 });
+                    if (arr[row + 1, col + 1].IsPressed == false) listTile.Add(new int[] { row + 1, col + 1 });
                 }
                 if (row != length)
                 {
-                    if (arr[row + 1, col].isPressed == false) listTile.Add(new int[] { row + 1, col });
+                    if (arr[row + 1, col].IsPressed == false) listTile.Add(new int[] { row + 1, col });
                 }
                 if (col != length)
                 {
-                    if (arr[row, col + 1].isPressed == false) listTile.Add(new int[] { row, col + 1 });
+                    if (arr[row, col + 1].IsPressed == false) listTile.Add(new int[] { row, col + 1 });
                 }
             }
             return listTile;
@@ -53,12 +54,12 @@ namespace MineSweeper
         public static void RevealVoid(int row, int col)
         {
             var listTile = AddNeighbour(row, col);
-            if(arr[row,col].GetCountNeighbourMine() == 0)
+            if(arr[row,col].CountNeighbourMine == 0)
             {
                 arr[row, col].Press();
                 foreach(var neigh in listTile)
                 {
-                    if (arr[neigh[0], neigh[1]].GetCountNeighbourMine() != 0) arr[neigh[0], neigh[1]].Press();
+                    if (arr[neigh[0], neigh[1]].CountNeighbourMine != 0) arr[neigh[0], neigh[1]].Press();
                     else RevealVoid(neigh[0], neigh[1]);
                 }
             }
@@ -68,9 +69,13 @@ namespace MineSweeper
         {
             int row = (cursorTop - 1) / 2;
             int col = (cursorLeft - 1) / 2;
-            if (arr[row, col].GetMine() == 1 || arr[row, col].GetCountNeighbourMine() != 0)
+            if (arr[row, col].Mine == 1 || arr[row, col].CountNeighbourMine != 0)
             {
                 arr[row, col].Press();
+                if (arr[row, col].Mine == 1)
+                {
+                    mineAmount--;
+                }
             }
             else
             {
@@ -86,41 +91,41 @@ namespace MineSweeper
             {
                 for (int j = 0; j <= length; j++)
                 {
-                    if (arr[i, j].GetMine() == 0)
+                    if (arr[i, j].Mine == 0)
                     {
                         if (i != 0)
                         {
-                            if (arr[i - 1, j].GetMine() == 1) count++;
+                            if (arr[i - 1, j].Mine == 1) count++;
                             if (j != length)
                             {
-                                if (arr[i - 1, j + 1].GetMine() == 1) count++;
+                                if (arr[i - 1, j + 1].Mine == 1) count++;
                             }
                         }
                         if (j != 0)
                         {
-                            if (arr[i, j - 1].GetMine() == 1) count++;
+                            if (arr[i, j - 1].Mine == 1) count++;
                             if (i != length)
                             {
-                                if (arr[i + 1, j - 1].GetMine() == 1) count++;
+                                if (arr[i + 1, j - 1].Mine == 1) count++;
                             }
                         }
                         if (i != 0 && j != 0)
                         {
-                            if (arr[i - 1, j - 1].GetMine() == 1) count++;
+                            if (arr[i - 1, j - 1].Mine == 1) count++;
                         }
                         if (i != length && j != length)
                         {
-                            if (arr[i + 1, j + 1].GetMine() == 1) count++;
+                            if (arr[i + 1, j + 1].Mine == 1) count++;
                         }
                         if (i != length)
                         {
-                            if (arr[i + 1, j].GetMine() == 1) count++;
+                            if (arr[i + 1, j].Mine == 1) count++;
                         }
                         if (j != length)
                         {
-                            if (arr[i, j + 1].GetMine() == 1) count++;
+                            if (arr[i, j + 1].Mine == 1) count++;
                         }
-                        arr[i, j].SetCountNeighbourMine(count);
+                        arr[i, j].CountNeighbourMine = count;
                         count = 0;
                     }
                 }
@@ -130,18 +135,19 @@ namespace MineSweeper
         {
             int n = arr.GetLength(0);
             int tileAmount = n * n;
-            int mineAmount = (int)(tileAmount * 0.15);
+            mineAmount = (int)(tileAmount * 0.15);
+            int mineCount = mineAmount;
             var rand = new Random();
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
                     int random = rand.Next(2);
-                    if (mineAmount == 0) random = 0;
+                    if (mineCount == 0) random = 0;
 
                     arr[i, j] = new Tile(0, random);
 
-                    if (random == 1) mineAmount--;
+                    if (random == 1) mineCount--;
                 }
             }
             CountNeighbours();
@@ -163,6 +169,7 @@ namespace MineSweeper
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine(mineAmount + " mines");
             Console.SetCursorPosition(cursorLeft, cursorTop);
         }
         public static void MoveCursor(int top, int left)
@@ -171,7 +178,9 @@ namespace MineSweeper
             int posTopCursor = Console.CursorTop;
             bool leftException = posLeftCursor == 1 && left == -2;
             bool topException = posTopCursor == 1 && top == -2;
-            if (!leftException && !topException)
+            bool bottomException = posTopCursor == (arr.GetLength(0) * 2 - 1) && top == 2;
+            bool rightException = posLeftCursor == (arr.GetLength(0) * 2 - 1) && left == 2;
+            if (!leftException && !topException && !bottomException && !rightException)
             {
                 Console.SetCursorPosition(posLeftCursor + left, posTopCursor + top);
             }
@@ -197,7 +206,8 @@ namespace MineSweeper
                     Draw();
                     break;
                 case ConsoleKey.F2:
-                    arr[(Console.CursorTop - 1) / 2, (Console.CursorLeft - 1) / 2].SetColor(ConsoleColor.Magenta);
+                    arr[(Console.CursorTop - 1) / 2, (Console.CursorLeft - 1) / 2].Color = ConsoleColor.Magenta;
+                    mineAmount--;
                     Draw();
                     break;
 
@@ -227,59 +237,45 @@ namespace MineSweeper
 
     class Tile
     {
-        int mine;
-        int countNeighbourMine;
-        public bool isPressed = false;
-        ConsoleColor color = ConsoleColor.White;
+        int _mine;
+        int _countNeighbourMine;
+        bool _isPressed;
+        ConsoleColor _color;
+
+        public int Mine { get; set; }
+        public int CountNeighbourMine { get; set; }
+        public bool IsPressed { get; set; } = false;
+        public ConsoleColor Color { get; set; } = ConsoleColor.White;
 
         public Tile(int countNeighbourMine, int mine)
         {
-            this.mine = mine;
-            this.countNeighbourMine = countNeighbourMine;
+            Mine = mine;
+            CountNeighbourMine = countNeighbourMine;
         }
 
         public void Press()
         {
-            isPressed = true;
-        }
-
-        public void SetColor(ConsoleColor color)
-        {
-            this.color = color;
-        }
-
-        public int GetMine()
-        {
-            return mine;
-        }
-
-        public int GetCountNeighbourMine()
-        {
-            return countNeighbourMine;
-        }
-        public void SetCountNeighbourMine(int count)
-        {
-            countNeighbourMine = count;
+            IsPressed = true;
         }
         public void Draw()
         {
-            if (mine == 1 && isPressed)
+            if (Mine == 1 && IsPressed)
             {
                 Console.BackgroundColor = ConsoleColor.Red;
                 Console.Write(' ');
             }
 
-            if (!isPressed)
+            if (!IsPressed)
             {
-                Console.BackgroundColor = color;
+                Console.BackgroundColor = Color;
                 Console.Write(' ');
             }
 
-            if (mine == 0 && isPressed)
+            if (Mine == 0 && IsPressed)
             {
                 Console.BackgroundColor = ConsoleColor.Yellow;
                 Console.ForegroundColor = ConsoleColor.Black;
-                Console.Write(countNeighbourMine);
+                Console.Write(CountNeighbourMine);
                 Console.ResetColor();
             }
         }
